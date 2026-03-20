@@ -25,9 +25,9 @@
     background: var(--cream);
     color: var(--text);
     height: 100dvh;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
   }
 
   .section-group {
@@ -69,6 +69,21 @@
     justify-content: center;
     padding: 4px 4px 0;
     gap: 2px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  @media (max-height: 600px) {
+    .row-label { font-size: 14px !important; width: 75px !important; min-width: 75px !important; }
+    .btn { padding: 5px 0 !important; font-size: 12px !important; border-width: 1px !important; border-radius: 5px !important; }
+    .section-label { font-size: 10px !important; letter-spacing: 1.5px !important; }
+    .row { padding: 1px 2px !important; gap: 3px !important; }
+    .buttons { gap: 3px !important; }
+    .result-bar { padding: 6px 12px !important; }
+    .result-label { font-size: 18px !important; }
+    .result-value { font-size: 24px !important; }
+    .reset-btn { font-size: 24px !important; padding: 2px 10px !important; }
+    .section-group + .section-group { margin-top: 1px; padding-top: 1px; }
   }
 
   .row {
