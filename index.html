@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Hodnotenie vína</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --wine: #722F37;
+    --wine-dark: #4A1C22;
+    --gold: #C9A84C;
+    --gold-light: #E8D5A0;
+    --cream: #FAF6F0;
+    --cream-dark: #E8DED2;
+    --text: #2C1810;
+    --text-muted: #7A6A60;
+    --white: #FFFFFF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .section-group {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .section-group + .section-group {
+    border-top: 1px solid var(--wine-dark);
+    margin-top: 2px;
+    padding-top: 2px;
+  }
+
+  .section-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--wine-dark);
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 2px;
+    min-width: 20px;
+  }
+
+  .section-rows {
+    flex: 1;
+  }
+
+  .form {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4px 4px 0;
+    gap: 2px;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    padding: 2px 4px;
+    gap: 4px;
+  }
+
+  .row-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 18px;
+    color: var(--wine-dark);
+    width: 95px;
+    min-width: 95px;
+    text-align: right;
+    padding-right: 6px;
+    line-height: 1.1;
+  }
+
+  .buttons {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+  }
+
+  .btn {
+    flex: 1;
+    padding: 8px 0;
+    border: 2px solid var(--cream-dark);
+    border-radius: 7px;
+    background: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.12s ease;
+    text-align: center;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .btn:active { transform: scale(0.93); }
+
+  .btn.selected {
+    background: var(--wine);
+    border-color: var(--wine);
+    color: var(--white);
+    box-shadow: 0 2px 8px rgba(114, 47, 55, 0.3);
+  }
+
+  .result-bar {
+    background: var(--wine-dark);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.15);
+  }
+
+  .result-left {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+
+  .result-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--gold-light);
+  }
+
+  .result-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .result-max {
+    font-size: 14px;
+    color: var(--gold-light);
+    opacity: 0.5;
+  }
+
+  .reset-btn {
+    background: none;
+    border: 1px solid rgba(232,213,160,0.3);
+    border-radius: 5px;
+    color: var(--gold-light);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 600;
+    padding: 2px 14px;
+    cursor: pointer;
+    opacity: 0.5;
+    line-height: 1;
+  }
+
+  .reset-btn:active { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="form" id="form"></div>
+
+<div class="result-bar">
+  <div class="result-left">
+    <span class="result-label">Celkom bodov: </span>
+    <span class="result-value" id="total">0</span>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">Reset</button>
+</div>
+
+<script>
+const rows = [
+  { label: "Čírosť", section: "Vzhľad", values: [5,4,3,2,1] },
+  { label: "Farba", values: [10,8,6,4,2] },
+  { label: "Intenzita", section: "Vôňa", values: [8,7,6,4,2] },
+  { label: "Čistota", values: [6,5,4,3,2] },
+  { label: "Kvalita", values: [16,14,12,10,8] },
+  { label: "Intenzita", section: "Chuť", values: [8,7,6,4,2] },
+  { label: "Čistota", values: [6,5,4,3,2] },
+  { label: "Kvalita", values: [22,19,16,13,10] },
+  { label: "Perzistencia", values: [8,7,6,5,4] },
+  { label: "Celkový dojem", section: " ", values: [11,10,9,8,7] },
+];
+
+const state = new Array(rows.length).fill(null);
+
+function render() {
+  const form = document.getElementById("form");
+  let html = "";
+  let groupRows = "";
+  let currentSection = null;
+
+  function flushGroup() {
+    if (groupRows) {
+      const label = currentSection ? `<div class="section-label">${currentSection}</div>` : "";
+      html += `<div class="section-group">${label}<div class="section-rows">${groupRows}</div></div>`;
+      groupRows = "";
+    }
+  }
+
+  rows.forEach((row, i) => {
+    if (row.section) {
+      flushGroup();
+      currentSection = row.section;
+    }
+    groupRows += `<div class="row">
+      <div class="row-label">${row.label}</div>
+      <div class="buttons">
+        ${row.values.map((v, j) => `<button class="btn${state[i]===j?' selected':''}" onclick="pick(${i},${j})">${v}</button>`).join("")}
+      </div>
+    </div>`;
+  });
+  flushGroup();
+
+  form.innerHTML = html;
+  updateTotal();
+}
+
+function pick(row, col) {
+  state[row] = state[row]===col ? null : col;
+  render();
+}
+
+function updateTotal() {
+  let sum = 0;
+  state.forEach((sel, i) => { if (sel !== null) sum += rows[i].values[sel]; });
+  document.getElementById("total").textContent = sum;
+}
+
+function resetAll() { state.fill(null); render(); }
+
+render();
+</script>
+</body>
+</html>
